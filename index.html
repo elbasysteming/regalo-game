@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Regalo de Cerámica 🎁</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to bottom, #e0f7fa, #e8f5e9);
+        color: #444;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+
+        color: #00796b;
+      }
+
+      .wheel {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        border: 10px solid #80cbc4;
+        margin: 20px auto;
+        position: relative;
+        background: conic-gradient(
+          #aed581 0deg 60deg,
+          #ffcc80 60deg 120deg,
+          #ce93d8 120deg 180deg,
+          #ffe082 180deg 240deg,
+          #b0bec5 240deg 300deg,
+          #f48fb1 300deg 360deg
+        );
+        transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+      }
+
+      .wheel::before {
+        content: "Sorpresa 🎁";
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%) rotate(0deg);
+        font-size: 1rem;
+        color: #444;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        pointer-events: none;
+      }
+
+      .pointer {
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 20px solid #00796b;
+        margin: 0 auto;
+      }
+
+      button {
+        font-family: "Poppins", sans-serif;
+        background-color: #4db6ac;
+        color: white;
+        font-size: 1.2rem;
+        border: none;
+        padding: 10px 20px;
+        margin: 20px;
+        border-radius: 12px;
+        cursor: pointer;
+      }
+
+      #step2 {
+        display: none;
+        margin-top: 30px;
+      }
+
+      .options button {
+        background-color: #c5e1a5;
+        margin: 5px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1rem;
+      }
+
+      .selected {
+        background-color: #81c784 !important;
+        color: #fff;
+      }
+
+      .image-container {
+        width: 80%;
+        height: 80%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .image-container img {
+        width: 100%;
+        max-width: 250px;
+        border-radius: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>El regalo atrasado de PATO 🎁</h1>
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel">
+        <!-- Imagen dentro de la ruleta -->
+        <div class="image-container" id="image-container">
+          <img
+            src="https://imagenes.20minutos.es/files/image_1920_1080/uploads/imagenes/2023/08/16/mama-pottery-cafe.jpeg"
+            alt="Cerámica ganadora"
+          />
+        </div>
+      </div>
+      <button onclick="spin()">Girar</button>
+
+      <div id="step2">
+        <h2 id="reward-msg">
+          ¡Una experiencia cafe + pintando en cerámica! ✨
+        </h2>
+        <p>Ahora elige tu día y horario:</p>
+
+        <h3>Día</h3>
+        <div class="options" id="days">
+          <button>Lunes</button>
+          <button>Martes</button>
+          <button>Miércoles</button>
+          <button>Jueves</button>
+          <button>Viernes</button>
+        </div>
+
+        <h3>Horario</h3>
+        <div class="options" id="hours">
+          <button>10 hs</button>
+          <button>12 hs</button>
+          <button>14 hs</button>
+          <button>17 hs</button>
+        </div>
+
+        <h2 id="final-msg" style="margin-top: 20px"></h2>
+
+        <!-- Botón para WhatsApp -->
+        <button
+          id="whatsapp-btn"
+          style="display: none"
+          onclick="sendWhatsApp()"
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let spinning = false;
+      function spin() {
+        if (spinning) return;
+        spinning = true;
+        const wheel = document.getElementById("wheel");
+
+        // Determina un ángulo aleatorio para una de las 6 secciones (cada una 60 grados)
+        const sectionIndex = Math.floor(Math.random() * 6);
+        const degreesPerSection = 60;
+        const baseDegrees = 360 * 5; // 5 vueltas
+        const finalDeg = baseDegrees + (sectionIndex * degreesPerSection + 30); // +30 para centrar el sector
+
+        wheel.style.transform = `rotate(${finalDeg}deg)`;
+
+        setTimeout(() => {
+          document.getElementById("step2").style.display = "block";
+
+          // Si cae en la última sección (café + cerámica)
+          const rewardMsg = document.getElementById("reward-msg");
+          if (sectionIndex === 5) {
+            rewardMsg.textContent =
+              "¡El regalo atrasado de la suerte es: Expriencia de tomar café + pintando en cerámica! ☕🎨";
+          } else {
+            rewardMsg.textContent =
+              "¡Te ganaste la experiencia de cerámica! ✨";
+          }
+
+          // Mostrar la imagen
+          document.getElementById("image-container").style.display = "flex";
+
+          spinning = false;
+        }, 4000);
+      }
+
+      let selectedDay = "";
+      let selectedHour = "";
+
+      document.getElementById("days").addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+          [...e.currentTarget.children].forEach((btn) =>
+            btn.classList.remove("selected")
+          );
+          e.target.classList.add("selected");
+          selectedDay = e.target.textContent;
+          updateFinalMessage();
+        }
+      });
+
+      document.getElementById("hours").addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+          [...e.currentTarget.children].forEach((btn) =>
+            btn.classList.remove("selected")
+          );
+          e.target.classList.add("selected");
+          selectedHour = e.target.textContent;
+          updateFinalMessage();
+        }
+      });
+
+      function updateFinalMessage() {
+        if (selectedDay && selectedHour) {
+          document.getElementById(
+            "final-msg"
+          ).textContent = `¡Listo! Será  un ${selectedDay} a las ${selectedHour} para crear magia en cerámica 🩵✨`;
+          document.getElementById("whatsapp-btn").style.display =
+            "inline-block";
+        }
+      }
+
+      function sendWhatsApp() {
+        const message = `¡Perdonneme a todos si acekto la experiencia de cerámica el ${selectedDay} a las ${selectedHour}.`;
+        const whatsappUrl = `https://wa.me/+5491153287179?text=${encodeURIComponent(
+          message
+        )}`;
+        window.open(whatsappUrl, "_blank");
+      }
+    </script>
+  </body>
+</html>
